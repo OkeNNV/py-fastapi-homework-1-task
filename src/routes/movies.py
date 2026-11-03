@@ -9,7 +9,7 @@ from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 router = APIRouter()
 
 
-@router.get("", response_model=MovieListResponseSchema)
+@router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
     page: int = Query(default=1, ge=1, description="Page number"),
     per_page: int = Query(default=10, ge=1, le=20, description="Items per page"),
@@ -57,7 +57,7 @@ async def get_movies(
     )
 
 
-@router.get("/{movie_id}", response_model=MovieDetailResponseSchema)
+@router.get("/{movie_id}/", response_model=MovieDetailResponseSchema)
 async def get_movie_by_id(
     movie_id: int,
     db: AsyncSession = Depends(get_db),
