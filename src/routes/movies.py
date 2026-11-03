@@ -9,11 +9,11 @@ from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 router = APIRouter()
 
 
-@router.get("/", response_model=MovieListResponseSchema)
+@router.get("", response_model=MovieListResponseSchema)
 async def get_movies(
-        page: int = Query(1, ge=1, description="Page number"),
-        per_page: int = Query(10, ge=1, le=20, description="Items per page"),
-        db: AsyncSession = Depends(get_db),
+    page: int = Query(default=1, ge=1, description="Page number"),
+    per_page: int = Query(default=10, ge=1, le=20, description="Items per page"),
+    db: AsyncSession = Depends(get_db),
 ) -> MovieListResponseSchema:
     count_query = select(func.count()).select_from(MovieModel)
     total_items_result = await db.execute(count_query)
@@ -38,7 +38,7 @@ async def get_movies(
     result = await db.execute(stmt)
     movies = result.scalars().all()
 
-    base_path = "/theater/movies/"
+    base_path = "/api/v1/theater/movies/"
     prev_page = (
         f"{base_path}?page={page - 1}&per_page={per_page}" if page > 1 else None
     )
@@ -57,10 +57,10 @@ async def get_movies(
     )
 
 
-@router.get("/{movie_id}/", response_model=MovieDetailResponseSchema)
+@router.get("/{movie_id}", response_model=MovieDetailResponseSchema)
 async def get_movie_by_id(
-        movie_id: int,
-        db: AsyncSession = Depends(get_db),
+    movie_id: int,
+    db: AsyncSession = Depends(get_db),
 ) -> MovieModel:
     stmt = select(MovieModel).where(MovieModel.id == movie_id)
     result = await db.execute(stmt)
