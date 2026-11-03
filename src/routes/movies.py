@@ -20,13 +20,7 @@ async def get_movies(
     total_items: int = total_items_result.scalar_one()
 
     if total_items == 0:
-        return MovieListResponseSchema(
-            movies=[],
-            prev_page=None,
-            next_page=None,
-            total_pages=0,
-            total_items=0,
-        )
+        raise HTTPException(status_code=404, detail="No movies found.")
 
     total_pages = math.ceil(total_items / per_page)
 
